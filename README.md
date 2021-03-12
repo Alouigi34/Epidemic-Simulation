@@ -11,7 +11,7 @@
 Ο χρήστης πατά το Start και βλέπει την εξάπλωση/αντιμετώπιση της πανδημίας στην οθόνη γραφικά με χρωματική κωδικοποίηση. Στο παράθυρο φαίνονται όλα τα σχετικά δεδομένα, όπως το πλήθος των υγιών, των αρρώστων, των ατόμων με ανοσία, καθώς και το πλήθος των θανάτων. Ο χρήστης μπορεί ανά πάσα στιγμή να χρησιμοποιήσει τα αντίστοιχα κουμπιά που θα υπάρχουν στο παράθυρο για να επιβάλει στην κοινότητα τη χρήση μάσκας, την τήρηση αποστάσεων, ή και την επιβολή lockdown. 
 
 (1)  https://docs.python.org/3/library/tkinter.html
-(2)  βλ. εικόνα reflex_agent.png, στο αποθετήριο GitHub του έργου μας xxxxxxx
+(2)  βλ. εικόνα reflex_agent.png, στο αποθετήριο GitHub του έργου μας https://github.com/LabTeam1/Epidemic-Simulation/blob/main/reflex_agent.png
 (3)  https://www.who.int/
 (4)  https://www.moh.gov.gr/
 (5)  https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(20)31142-9/fulltext
