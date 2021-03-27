@@ -116,7 +116,7 @@ class Agent:
 
                 window.update()
         else:
-            while (coords[0] > x3 or coords[0] > y3):
+            while (coords[0] > x3 or coords[0] < y3):
                 time.sleep(0.01)
 
                 self.canvas.move(self.circle, -1, ((x1 + 1) * a + b) - y1)
