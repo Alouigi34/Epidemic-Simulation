@@ -144,9 +144,10 @@ ball2 = Agent(canvas, 200, 100, 10, 4, 4, "green")
 
 shops = [Shop(canvas, 100, 100, 50, 50), Shop(canvas, 100, 10, 50, 50)]
 
-while 1:
-    window.update_idletasks()
-    window.update() 
-    time.sleep(0.1)
-    ball1.move_to(shops)
-    ball2.move_to(shops)
+window.update_idletasks()
+window.update() 
+time.sleep(0.1)
+ball1.move_to(shops)
+ball2.move_to(shops)
+
+window.mainloop()
