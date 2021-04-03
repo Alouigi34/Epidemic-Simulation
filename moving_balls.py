@@ -1,9 +1,6 @@
 from tkinter import *
 import math
 import time
-from numpy import ones,vstack
-from numpy.linalg import lstsq
-
 
 def MergeSort(data): 
     #Ω(nlogn), O(nlogn)
@@ -91,17 +88,21 @@ class Agent:
         y3 += target.height//2
 
         # Find the equation of the line
-        points = [(coords[0], coords[1]),(target.x + target.width//2, target.y + target.height//2)]
-        x_coords, y_coords = zip(*points)
-        A = vstack([x_coords,ones(len(x_coords))]).T
-        a, b = lstsq(A, y_coords)[0]
+        l2, l1 = (coords[0], coords[1]), (target.x + target.width//2, target.y + target.height//2)
+
+        try:
+            a = (l2[1] - l1[1]) / (l2[0] - l1[0])
+            b = (l2[1] - (a * l2[0]))
+        except:
+            return False
+
         
         # Determine if the circle is left from the object and act accordingly
         isLeft = False
         if x1 < x3:
             isLeft = True
 
-        if isLeft:
+        if isLeft: 
             while (coords[0] < x3 or coords[0] < y3):
                 time.sleep(0.01)
 
@@ -129,6 +130,19 @@ class Agent:
                 self.canvas.tag_raise(self.circle)
 
                 window.update()
+    
+    # distance check
+    def check_distance(self, agent):
+        color1 = self.canvas.itemcget(agent.circle, "fill")
+
+        c1 = self.canvas.coords(self.circle)
+        c2 = self.canvas.coords(agent.circle)
+        distance = math.sqrt(((c1[0]-c2[0])**2) + ((c1[1]-c2[1])**2))
+
+        if distance < 10:
+            if color1 == "red":
+                self.canvas.itemconfig(self.circle, fill="red")
+                self.color = "red"
             
 
 # main
@@ -139,15 +153,17 @@ window.resizable(False, False)
 canvas = Canvas(window, width=300, height=300)
 canvas.pack()
 
-ball1 = Agent(canvas, 20, 30, 10, 5, 5, "red")
-ball2 = Agent(canvas, 200, 100, 10, 4, 4, "green")
+ball1 = Agent(canvas, 20, 30, 10, 5, 5, "green")
+ball2 = Agent(canvas, 200, 100, 10, 4, 4, "red")
 
-shops = [Shop(canvas, 100, 100, 50, 50), Shop(canvas, 100, 10, 50, 50)]
+shops = [Shop(canvas, 100, 10, 50, 50)]
 
-window.update_idletasks()
-window.update() 
-time.sleep(0.1)
-ball1.move_to(shops)
-ball2.move_to(shops)
+while 1:
+    window.update_idletasks()
+    window.update() 
+    time.sleep(0.1)
+    ball1.move_to(shops)
+    ball2.move_to(shops)
 
-window.mainloop()
+    ball1.check_distance(ball2)
+    ball2.check_distance(ball1)
