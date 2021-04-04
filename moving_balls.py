@@ -139,7 +139,6 @@ class Agent:
         c1 = self.canvas.coords(self.circle)
         c2 = self.canvas.coords(agent.circle)
         distance = math.sqrt(((c1[0]-c2[0])**2) + ((c1[1]-c2[1])**2))
-        distance = distance = math.sqrt(((c1[0]-c2[0])**2) + ((c1[1]-c2[1])**2))
         if distance < 10:
             print(1)
             if random.choice(probability) == 1:
