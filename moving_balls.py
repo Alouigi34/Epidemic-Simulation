@@ -1,6 +1,7 @@
 from tkinter import *
 import math
 import time
+import random
 
 def MergeSort(data): 
     #Ω(nlogn), O(nlogn)
@@ -134,15 +135,17 @@ class Agent:
     # distance check
     def check_distance(self, agent):
         color1 = self.canvas.itemcget(agent.circle, "fill")
-
+        probability = [0,0,0,0,1]
         c1 = self.canvas.coords(self.circle)
         c2 = self.canvas.coords(agent.circle)
         distance = math.sqrt(((c1[0]-c2[0])**2) + ((c1[1]-c2[1])**2))
-
+        distance = distance = math.sqrt(((c1[0]-c2[0])**2) + ((c1[1]-c2[1])**2))
         if distance < 10:
-            if color1 == "red":
-                self.canvas.itemconfig(self.circle, fill="red")
-                self.color = "red"
+            print(1)
+            if random.choice(probability) == 1:
+                if color1 == "red":
+                    self.canvas.itemconfig(self.circle, fill="red")
+                    self.color = "red"
             
 
 # main
