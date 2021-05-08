@@ -46,6 +46,8 @@ class Simulation:
             for agent in self.agent_list:
                 if agent.state == agent.pref_shop_state:
                     agent.reached_destination = True
+                elif agent.state == agent.home_state:
+                    agent.reached_destination = False
                 
                 if agent.reached_destination:
                     agent.find_next_state(agent.home_state)
