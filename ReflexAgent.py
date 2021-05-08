@@ -7,10 +7,10 @@ class ReflexAgent:
         self.canvas = canvas
         self.radius = radius
         self.state = state
-        self.x1 = self.state[0] + self.radius
-        self.y1 = self.state[1] + self.radius
-        self.x2 = self.state[0] - self.radius
-        self.y2 = self.state[1] - self.radius
+        self.x1 = self.state[0] - self.radius
+        self.y1 = self.state[1] - self.radius
+        self.x2 = self.state[0] + self.radius
+        self.y2 = self.state[1] + self.radius
         self.color = color
         self.circle = self.canvas.create_oval(
             self.x1, self.y1, self.x2, self.y2, fill=self.color)

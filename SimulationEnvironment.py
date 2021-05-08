@@ -1,6 +1,7 @@
 from tkinter import *
 import random
 import ReflexAgent as ra
+import time
 
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
@@ -44,7 +45,7 @@ class Simulation:
             for agent in self.agent_list:
                 agent.find_next_state(agent.pref_shop_state)
                 agent.update()
-                # time.sleep(0.001)     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
+                # time.sleep(0.001) #Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
 
             window.update_idletasks()
             window.update()
