@@ -18,6 +18,8 @@ class ReflexAgent:
         self.home_state = state     # Η κατάσταση όπου 'γεννιέται' ο πράκτορας.
         self.next_state = self.state
 
+        self.reached_destination = False # Η μεταβλητή στην οποία αποθηκεύεται αν έφτασε ο πράκτορας στον προορισμό του
+
         # Η κατάσταση όπου βρίσκεται το κατάστημα που προτιμάει.
         self.pref_shop_state = (None, None)
 

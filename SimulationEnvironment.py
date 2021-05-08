@@ -41,9 +41,17 @@ class Simulation:
 
         # mainloop
         while self.running:
-            # Για κάθε πράκτορα βρες την επόμενη κατάστασή του και μετακίνησέ τον εκεί.
+            # Για κάθε πράκτορα βρες αν έχει φτάσει τον προοσισμό του. 
+            # Αν ναι, μετακίνησέ τον πίσω στο "σπίτι" του. Αν όχι, συνέχισε να για τον φτάσεις.
             for agent in self.agent_list:
-                agent.find_next_state(agent.pref_shop_state)
+                if agent.state == agent.pref_shop_state:
+                    agent.reached_destination = True
+                
+                if agent.reached_destination:
+                    agent.find_next_state(agent.home_state)
+                else:
+                    agent.find_next_state(agent.pref_shop_state)
+                    
                 agent.update()
                 # time.sleep(0.001) #Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
 
