@@ -7,16 +7,18 @@ class ReflexAgent:
         self.canvas = canvas
         self.radius = radius
         self.state = state
-        self.x1 = self.state[0] + self.radius
-        self.y1 = self.state[1] + self.radius
-        self.x2 = self.state[0] - self.radius
-        self.y2 = self.state[1] - self.radius
+        self.x1 = self.state[0] - self.radius
+        self.y1 = self.state[1] - self.radius
+        self.x2 = self.state[0] + self.radius
+        self.y2 = self.state[1] + self.radius
         self.color = color
         self.circle = self.canvas.create_oval(
             self.x1, self.y1, self.x2, self.y2, fill=self.color)
 
         self.home_state = state     # Η κατάσταση όπου 'γεννιέται' ο πράκτορας.
         self.next_state = self.state
+
+        self.reached_destination = False # Η μεταβλητή στην οποία αποθηκεύεται αν έφτασε ο πράκτορας στον προορισμό του
 
         # Η κατάσταση όπου βρίσκεται το κατάστημα που προτιμάει.
         self.pref_shop_state = (None, None)
