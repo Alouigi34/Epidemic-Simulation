@@ -136,11 +136,13 @@ class Agent:
     def check_distance(self, agent):
         color1 = self.canvas.itemcget(agent.circle, "fill")
         probability = [0,0,0,0,1]
+        
         c1 = self.canvas.coords(self.circle)
         c2 = self.canvas.coords(agent.circle)
+
         distance = math.sqrt(((c1[0]-c2[0])**2) + ((c1[1]-c2[1])**2))
         if distance < 10:
-            print(1)
+
             if random.choice(probability) == 1:
                 if color1 == "red":
                     self.canvas.itemconfig(self.circle, fill="red")
@@ -151,21 +153,36 @@ class Agent:
 window = Tk()
 window.title("Moving balls")
 window.resizable(False, False)
+done = False
 
-canvas = Canvas(window, width=300, height=300)
+canvas = Canvas(window, width=500, height=300)
 canvas.pack()
 
-ball1 = Agent(canvas, 20, 30, 10, 5, 5, "green")
-ball2 = Agent(canvas, 200, 100, 10, 4, 4, "red")
+def main():
+    done = True
 
-shops = [Shop(canvas, 100, 10, 50, 50)]
+    btn.place(x=10000)
+    ball1 = Agent(canvas, 20, 30, 10, 5, 5, "green")
+    ball2 = Agent(canvas, 200, 100, 10, 4, 4, "red")
 
-while 1:
+    shops = [Shop(canvas, 100, 10, 50, 50)]
+
+    while 1:
+        window.update_idletasks()
+        window.update() 
+        time.sleep(0.1)
+        ball1.move_to(shops)
+        ball2.move_to(shops)
+
+        ball1.check_distance(ball2)
+        ball2.check_distance(ball1)
+
+btn = Button(window, text = "start", command = main)
+btn.pack()
+btn.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+while not done:        
     window.update_idletasks()
     window.update() 
     time.sleep(0.1)
-    ball1.move_to(shops)
-    ball2.move_to(shops)
 
-    ball1.check_distance(ball2)
-    ball2.check_distance(ball1)
