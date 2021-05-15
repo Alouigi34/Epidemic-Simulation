@@ -6,7 +6,7 @@ import ui
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
 class Simulation:
-    def __init__(self, canvas_size, population, agent_size, shop_population, ui_space = 300):
+    def __init__(self, canvas_size, population, agent_size, shop_population, ui_space=300):
         self.canvas_size = canvas_size
         self.population = population
         self.agent_size = agent_size
@@ -30,7 +30,7 @@ class Simulation:
             self.window, width=self.canvas_size[0], height=self.canvas_size[1], bg='gray5')
         self.canvas.pack()
 
-        ui.initUI(self, self.window)
+        _ui = ui.Ui(self, self.window)
 
         while not self.has_started:
             self.window.update_idletasks()
@@ -58,7 +58,7 @@ class Simulation:
             # mainloop
             while self.running:
                 # Αν η προσομοίωση δεν έχει "παγώσει"
-                # Για κάθε πράκτορα βρες αν έχει φτάσει τον προοσισμό του. 
+                # Για κάθε πράκτορα βρες αν έχει φτάσει τον προοσισμό του.
                 # Αν ναι, μετακίνησέ τον πίσω στο "σπίτι" του. Αν όχι, συνέχισε να για τον φτάσεις.
                 if not self.is_paused:
                     for agent in self.agent_list:
@@ -66,17 +66,20 @@ class Simulation:
                             agent.reached_destination = True
                         elif agent.state == agent.home_state:
                             agent.reached_destination = False
-                        
+
                         if agent.reached_destination:
                             agent.find_next_state(agent.home_state)
                         else:
                             agent.find_next_state(agent.pref_shop_state)
-                            
+
                         agent.update()
                         # time.sleep(0.001)     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
 
                 self.window.update_idletasks()
                 self.window.update()
+    
+    def destroy(self):
+        self.window.destroy()
 
 
 # Εικονικό κατάστημα για την προσομοίωση της κοινότητας
