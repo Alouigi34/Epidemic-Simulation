@@ -30,7 +30,7 @@ class Simulation:
             self.window, width=self.canvas_size[0], height=self.canvas_size[1], bg='gray5')
         self.canvas.pack()
 
-        ui.initUI(self, self.window)
+        _ui = ui.Ui(self, self.window)
 
         while not self.has_started:
             self.window.update_idletasks()
@@ -77,6 +77,9 @@ class Simulation:
 
                 self.window.update_idletasks()
                 self.window.update()
+    
+    def destroy(self):
+        self.window.destroy()
 
 
 # Εικονικό κατάστημα για την προσομοίωση της κοινότητας
