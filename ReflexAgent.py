@@ -3,9 +3,10 @@ import HelperFunctions as hf
 
 # Ανακλαστικός πράκτορας τεχνητής νοημοσύνης
 class ReflexAgent:
-    def __init__(self, canvas, state, radius, color):
-        self.canvas = canvas
-        self.radius = radius
+    def __init__(self, simENV, state, color):
+        self.simENV = simENV
+        self.canvas = simENV.canvas
+        self.radius = simENV.agent_size
         self.state = state
         self.x1 = self.state[0] - self.radius
         self.y1 = self.state[1] - self.radius
@@ -18,7 +19,8 @@ class ReflexAgent:
         self.home_state = state     # Η κατάσταση όπου 'γεννιέται' ο πράκτορας.
         self.next_state = self.state
 
-        self.reached_destination = False # Η μεταβλητή στην οποία αποθηκεύεται αν έφτασε ο πράκτορας στον προορισμό του
+        # Η μεταβλητή στην οποία αποθηκεύεται αν έφτασε ο πράκτορας στον προορισμό του
+        self.reached_destination = False
 
         # Η κατάσταση όπου βρίσκεται το κατάστημα που προτιμάει.
         self.pref_shop_state = (None, None)
@@ -78,8 +80,13 @@ class ReflexAgent:
 
         # (Προφανώς, αν τα παραπάνω δεν ισχύουν τότε ο πράκτορας θα παραμείνει σταθερός.)
 
-        # Εκτέλεσε τη μετακίνηση.
+        # Εκτέλεσε τη μετακίνηση και ανανέωσε το grid.
         self.canvas.move(self.circle, dx, dy)
         self.canvas.tag_raise(self.circle)
+
+        self.simENV.agent_grid[self.state[0]][self.state[1]].remove(self)
+        self.simENV.agent_grid[self.next_state[0]
+                               ][self.next_state[1]].append(self)
+
         # Πλέον, η τωρινή κατάσταση του πράκτορα είναι αυτή που μέχρι προηγουμένως ήταν η επόμενη.
         self.state = self.next_state
