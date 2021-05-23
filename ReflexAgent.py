@@ -1,9 +1,10 @@
 import HelperFunctions as hf
-
+from tkinter import *
+import random
 
 # Ανακλαστικός πράκτορας τεχνητής νοημοσύνης
 class ReflexAgent:
-    def __init__(self, simENV, state, color):
+    def __init__(self, simENV, state, color, sick):
         self.simENV = simENV
         self.canvas = simENV.canvas
         self.radius = simENV.agent_size
@@ -13,6 +14,7 @@ class ReflexAgent:
         self.x2 = self.state[0] + self.radius
         self.y2 = self.state[1] + self.radius
         self.color = color
+        self.is_sick = sick
         self.circle = self.canvas.create_oval(
             self.x1, self.y1, self.x2, self.y2, fill=self.color)
 
@@ -39,7 +41,7 @@ class ReflexAgent:
 
     # Μέθοδος εύρεσης της επόμενης κατάστασης στην οποία σκοπεύει να μετακινηθεί ο πράκτορας
     def find_next_state(self, goal_state):
-        successor_states = hf.neighbor_states(self.state)
+        successor_states = hf.neighbor_states(self.state, -1, 2, -1, 2, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
         min_cost = float('inf')
         next_state = self.state
         # Για κάθε γειτονική κατάσταση από την τωρινή του πράκτορα υπολόγισε το κόστος μετακίνησης σε αυτήν
@@ -54,6 +56,27 @@ class ReflexAgent:
     # Η συνάρτηση αξιολόγησης (προς το παρόν ο πράκτορας αξιολογεί βάσει ελάχιστης απόστασης από τον στόχο).
     def evaluation_function(self, start_state, goal_state):
         return hf.min_distance(start_state, goal_state)
+
+    # Η μέθοδος που ελέγχει αν ο πράκτορας έχει μολυνθεί από την ασθένεια
+    def update_sick_state(self):
+        size = (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0]))
+
+        # Για κάθε κοντινή κατάστηση από την τωρινή του πράκτορα δες αν υπάρχουν άλλοι πράκτορες σε αυτές.
+        # Αν ναι και κάποιος από αυτούς είναι μολυσμένος, μολύνσου και εσύ. Αν όχι αλλά εσύ είσαι ήδη μολυσμένος, μόλυνέ τους. Αλλιώς, συνέχισε κανονικά.
+        neighbors = hf.neighbor_states(self.state, -5, 6, -5, 6, size)
+        possibility_range = [0, 100]
+
+        for i in neighbors:
+            for j in self.simENV.agent_grid[i[0]] [i[1]]:
+                if random.randint(possibility_range[0], possibility_range[1]) == 2:
+                    if j.is_sick:
+                        self.canvas.itemconfig(self.circle, fill = "red")
+                        self.is_sick = True
+                    elif self.is_sick:
+                        self.canvas.itemconfig(j.circle, fill = "red")
+                        j.is_sick = True
+                    return True
+        return False
 
     # Η μέθοδος αυτή καλείται για να ανανεώσει την κατάσταση του πράκτορα.
     def update(self):

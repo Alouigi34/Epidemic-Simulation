@@ -7,11 +7,12 @@ import ui
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
 class Simulation:
-    def __init__(self, canvas_size, population, agent_size, shop_population, ui_space=200):
+    def __init__(self, canvas_size, population, agent_size, shop_population, sick, ui_space=200):
         self.canvas_size = canvas_size
         self.population = population
         self.agent_size = agent_size
         self.shop_population = shop_population
+        self.sick_population = sick
         self.agent_list = []
         self.shop_list = []
         self.agent_grid = [
@@ -50,10 +51,17 @@ class Simulation:
                     0, self.canvas_size[1])), random.randint(15, 20), random.randint(15, 20)))
 
             # Δημιούργησε τους πράκτορες και τοποθέτησέ τους στη λίστα agent_list.
-            for i in range(self.population):
+            for i in range(self.sick_population):
                 ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
                 ag_y = random.randint(0, self.canvas_size[1])
-                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'turquoise3')
+                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'red', True)
+                self.agent_list.append(new_agent)
+                self.agent_grid[ag_x][ag_y].append(new_agent)
+
+            for i in range(self.population - self.sick_population):
+                ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
+                ag_y = random.randint(0, self.canvas_size[1])
+                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'turquoise3', False)
                 self.agent_list.append(new_agent)
                 self.agent_grid[ag_x][ag_y].append(new_agent)
 
@@ -66,6 +74,7 @@ class Simulation:
                 # Αν η προσομοίωση δεν έχει "παγώσει"
                 # Για κάθε πράκτορα βρες αν έχει φτάσει τον προοσισμό του.
                 # Αν ναι, μετακίνησέ τον πίσω στο "σπίτι" του. Αν όχι, συνέχισε να για τον φτάσεις.
+                # Επίσης έλεγξε αν ο πράκτορας πρέπει να μολυνθεί ή να μολύνει κάποιον άλλον
                 if not self.is_paused:
                     for agent in self.agent_list:
                         if agent.state == agent.pref_shop_state:
@@ -77,6 +86,8 @@ class Simulation:
                             agent.find_next_state(agent.home_state)
                         else:
                             agent.find_next_state(agent.pref_shop_state)
+
+                        agent.update_sick_state()
 
                         agent.update()
                         # time.sleep(0.001)     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
