@@ -7,12 +7,12 @@ import ui
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
 class Simulation:
-    def __init__(self, canvas_size, population, agent_size, shop_population, sick, ui_space=200):
+    def __init__(self, canvas_size, population, agent_size, shop_population, sick_population, ui_space=200):
         self.canvas_size = canvas_size
         self.population = population
         self.agent_size = agent_size
         self.shop_population = shop_population
-        self.sick_population = sick
+        self.sick_population = sick_population
         self.agent_list = []
         self.shop_list = []
         self.agent_grid = [
@@ -54,14 +54,14 @@ class Simulation:
             for i in range(self.sick_population):
                 ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
                 ag_y = random.randint(0, self.canvas_size[1])
-                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'red', True)
+                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'red', "sick")
                 self.agent_list.append(new_agent)
                 self.agent_grid[ag_x][ag_y].append(new_agent)
 
             for i in range(self.population - self.sick_population):
                 ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
                 ag_y = random.randint(0, self.canvas_size[1])
-                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'turquoise3', False)
+                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'turquoise3', "healthy")
                 self.agent_list.append(new_agent)
                 self.agent_grid[ag_x][ag_y].append(new_agent)
 
@@ -87,7 +87,7 @@ class Simulation:
                         else:
                             agent.find_next_state(agent.pref_shop_state)
 
-                        agent.update_sick_state()
+                        agent.update_conditions()
 
                         agent.update()
                         # time.sleep(0.001)     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
