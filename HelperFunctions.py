@@ -7,12 +7,13 @@ def min_distance(start_state, goal_state):
 
 
 # Συνάρτηση εύρεσης γειτονικών καταστάσεων μίας οποιασδήποτε κατάστασης.
-def neighbor_states(state):
+def neighbor_states(state, _range, grid_size):
     neighbors = []
-    for i in range(-1, 2):
-        for j in range(-1, 2):
+
+    for i in range(-_range, _range+1):
+        for j in range(-_range, _range+1):
             x = state[0]+i
             y = state[1]+j
-            if x >= 0 and y >= 0:
+            if x >= 0 and x <= (grid_size[0] - 1) and y >= 0 and y <= (grid_size[1] - 1):
                 neighbors.append((x, y))
     return neighbors
