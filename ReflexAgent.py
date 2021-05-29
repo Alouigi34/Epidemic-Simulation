@@ -64,7 +64,7 @@ class ReflexAgent:
         # Για κάθε κοντινή κατάστηση από την τωρινή του πράκτορα δες αν υπάρχουν άλλοι πράκτορες σε αυτές.
         # Αν ναι και κάποιος από αυτούς είναι μολυσμένος, μολύνσου και εσύ. Αν όχι αλλά εσύ είσαι ήδη μολυσμένος, μόλυνέ τους. Αλλιώς, συνέχισε κανονικά.
         neighbors = hf.neighbor_states(self.state, 5, size)
-        possibility_range = [2, 2]
+        possibility_range = [0, 100]
 
         for i in neighbors:
             for j in self.simENV.agent_grid[i[0]] [i[1]]:
