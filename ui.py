@@ -41,4 +41,4 @@ class Ui:
 
     def update_counters(self):
         self.sick_counter["text"] = f"Sick: {self.simulation.sick_population} ({round(self.simulation.sick_population / self.simulation.population * 100, 1)}%)"
-        self.healthy_counter["text"] = f"Healthy: {self.simulation.population - self.simulation.sick_population} ({round(self.simulation.population - self.simulation.sick_population / self.simulation.population * 100, 1)})%"
+        self.healthy_counter["text"] = f"Healthy: {self.simulation.population - self.simulation.sick_population} ({round(self.simulation.population - self.simulation.sick_population / self.simulation.population * 100, 1)}%)"
