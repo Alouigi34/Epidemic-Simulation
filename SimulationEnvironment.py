@@ -1,18 +1,22 @@
 from tkinter import *
 import random
+from typing import Counter
 import ReflexAgent as ra
 import ui
 
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
 class Simulation:
-    def __init__(self, canvas_size, population, agent_size, shop_population, ui_space=300):
+    def __init__(self, canvas_size, population, agent_size, shop_population, sick_population, ui_space=200):
         self.canvas_size = canvas_size
         self.population = population
         self.agent_size = agent_size
         self.shop_population = shop_population
+        self.sick_population = sick_population
         self.agent_list = []
         self.shop_list = []
+        self.agent_grid = [
+            [[] for i in range(canvas_size[1]+1)] for j in range(canvas_size[0]-ui_space+1)]
 
         self.is_paused = False  # Ελέγχει αν έχει "παγώσει" η προσομοίωση
         self.has_started = False    # Ελέγχει αν έχει ξεκινήσει η προσομοίωση
@@ -47,9 +51,19 @@ class Simulation:
                     0, self.canvas_size[1])), random.randint(15, 20), random.randint(15, 20)))
 
             # Δημιούργησε τους πράκτορες και τοποθέτησέ τους στη λίστα agent_list.
-            for i in range(self.population):
-                self.agent_list.append(ra.ReflexAgent(self.canvas, (random.randint(
-                    0, self.canvas_size[0] - self.ui_space), random.randint(0, self.canvas_size[1])), self.agent_size, 'turquoise3'))
+            for i in range(self.sick_population):
+                ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
+                ag_y = random.randint(0, self.canvas_size[1])
+                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'red', "sick")
+                self.agent_list.append(new_agent)
+                self.agent_grid[ag_x][ag_y].append(new_agent)
+
+            for i in range(self.population - self.sick_population):
+                ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
+                ag_y = random.randint(0, self.canvas_size[1])
+                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'turquoise3', "healthy")
+                self.agent_list.append(new_agent)
+                self.agent_grid[ag_x][ag_y].append(new_agent)
 
             # Για κάθε έναν πράκτορα βρες το κατάστημα προτίμησής του και αποθήκευσέ την τοποθεσία του στο pref_shop_state.
             for agent in self.agent_list:
@@ -60,6 +74,7 @@ class Simulation:
                 # Αν η προσομοίωση δεν έχει "παγώσει"
                 # Για κάθε πράκτορα βρες αν έχει φτάσει τον προοσισμό του.
                 # Αν ναι, μετακίνησέ τον πίσω στο "σπίτι" του. Αν όχι, συνέχισε να για τον φτάσεις.
+                # Επίσης έλεγξε αν ο πράκτορας πρέπει να μολυνθεί ή να μολύνει κάποιον άλλον
                 if not self.is_paused:
                     for agent in self.agent_list:
                         if agent.state == agent.pref_shop_state:
@@ -72,12 +87,14 @@ class Simulation:
                         else:
                             agent.find_next_state(agent.pref_shop_state)
 
+                        agent.update_conditions()
+
                         agent.update()
                         # time.sleep(0.001)     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
 
                 self.window.update_idletasks()
                 self.window.update()
-    
+
     def destroy(self):
         self.window.destroy()
 
