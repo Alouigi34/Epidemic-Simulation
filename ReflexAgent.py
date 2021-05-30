@@ -69,12 +69,16 @@ class ReflexAgent:
         for i in neighbors:
             for j in self.simENV.agent_grid[i[0]] [i[1]]:
                 if random.randint(possibility_range[0], possibility_range[1]) == 2:
-                    if j.condition == "sick":
+                    if j.condition == "sick" and self.condition == "healthy":
                         self.canvas.itemconfig(self.circle, fill = "red")
                         self.condition = "sick"
-                    elif self.condition == "sick":
+                        self.simENV.sick_population += 1
+
+                    elif self.condition == "sick" and j.condition == "healthy":
                         self.canvas.itemconfig(j.circle, fill = "red")
                         j.condition = "sick"
+                        self.simENV.sick_population += 1
+                        
                     return True
         return False
 
