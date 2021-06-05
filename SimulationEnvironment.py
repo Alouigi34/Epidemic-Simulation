@@ -34,7 +34,7 @@ class Simulation:
             self.window, width=self.canvas_size[0], height=self.canvas_size[1], bg='gray5')
         self.canvas.pack()
 
-        _ui = ui.Ui(self, self.window)
+        self._ui = ui.Ui(self, self.window)
 
         while not self.has_started:
             self.window.update_idletasks()
@@ -54,6 +54,12 @@ class Simulation:
             for i in range(self.sick_population):
                 ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
                 ag_y = random.randint(0, self.canvas_size[1])
+
+                for shop in self.shop_list:
+                    while ag_x >= shop.x1 and ag_x <= shop.x2 and ag_y >= shop.y1 and ag_y <= shop.y2:
+                        ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
+                        ag_y = random.randint(0, self.canvas_size[1])
+
                 new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'red', "sick")
                 self.agent_list.append(new_agent)
                 self.agent_grid[ag_x][ag_y].append(new_agent)
@@ -61,6 +67,12 @@ class Simulation:
             for i in range(self.population - self.sick_population):
                 ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
                 ag_y = random.randint(0, self.canvas_size[1])
+
+                for shop in self.shop_list:
+                    while ag_x >= shop.x1 and ag_x <= shop.x2 and ag_y >= shop.y1 and ag_y <= shop.y2:
+                        ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
+                        ag_y = random.randint(0, self.canvas_size[1])
+
                 new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'turquoise3', "healthy")
                 self.agent_list.append(new_agent)
                 self.agent_grid[ag_x][ag_y].append(new_agent)
@@ -88,6 +100,7 @@ class Simulation:
                             agent.find_next_state(agent.pref_shop_state)
 
                         agent.update_conditions()
+                        self._ui.update_counters()
 
                         agent.update()
                         # time.sleep(0.001)     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
