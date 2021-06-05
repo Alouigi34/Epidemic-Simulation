@@ -3,6 +3,7 @@ import random
 from typing import Counter
 import ReflexAgent as ra
 import ui
+import time
 
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
@@ -86,6 +87,10 @@ class Simulation:
             for agent in self.agent_list:
                 agent.pref_shop_state = agent.preferred_shop(self.shop_list)
 
+            # Μετρητές των loop και των ημερών
+            self.counter = 0
+            self.day = 0
+
             # mainloop
             while self.running:
                 # Αν η προσομοίωση δεν έχει "παγώσει"
@@ -108,6 +113,13 @@ class Simulation:
                         self._ui.update_counters()
 
                         agent.update()
+
+                    # Αν χρειαστεί, άλλαξε τη μέρα
+                    self.counter += 1
+                    if self.counter >= (self.canvas_size[0] - self.ui_space) // 2:
+                        self.day += 1
+                        self.counter = 0
+
                         # time.sleep(0.001)     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
 
                 self.window.update_idletasks()
