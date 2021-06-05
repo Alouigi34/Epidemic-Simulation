@@ -3,6 +3,7 @@ import random
 from typing import Counter
 import ReflexAgent as ra
 import ui
+import time
 
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
@@ -57,7 +58,8 @@ class Simulation:
 
                 for shop in self.shop_list:
                     while ag_x >= shop.x1 and ag_x <= shop.x2 and ag_y >= shop.y1 and ag_y <= shop.y2:
-                        ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
+                        ag_x = random.randint(
+                            0, self.canvas_size[0] - self.ui_space)
                         ag_y = random.randint(0, self.canvas_size[1])
 
                 new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'red', "sick")
@@ -67,19 +69,27 @@ class Simulation:
             for i in range(self.population - self.sick_population):
                 ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
                 ag_y = random.randint(0, self.canvas_size[1])
+                m_d_s_x = 75
+                m_d_s_y = 50
 
                 for shop in self.shop_list:
-                    while ag_x >= shop.x1 and ag_x <= shop.x2 and ag_y >= shop.y1 and ag_y <= shop.y2:
-                        ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
+                    while ag_x >= (shop.x1 - m_d_s_x) and ag_x <= (shop.x2 + m_d_s_x) and ag_y >= (shop.y1 - m_d_s_y) and ag_y <= (shop.y2 + m_d_s_y):
+                        ag_x = random.randint(
+                            0, self.canvas_size[0] - self.ui_space)
                         ag_y = random.randint(0, self.canvas_size[1])
 
-                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'turquoise3', "healthy")
+                new_agent = ra.ReflexAgent(
+                    self, (ag_x, ag_y), 'turquoise3', "healthy")
                 self.agent_list.append(new_agent)
                 self.agent_grid[ag_x][ag_y].append(new_agent)
 
             # Για κάθε έναν πράκτορα βρες το κατάστημα προτίμησής του και αποθήκευσέ την τοποθεσία του στο pref_shop_state.
             for agent in self.agent_list:
                 agent.pref_shop_state = agent.preferred_shop(self.shop_list)
+
+            # Μετρητές των loop και των ημερών
+            self.counter = 0
+            self.day = 0
 
             # mainloop
             while self.running:
@@ -103,6 +113,13 @@ class Simulation:
                         self._ui.update_counters()
 
                         agent.update()
+
+                    # Αν χρειαστεί, άλλαξε τη μέρα
+                    self.counter += 1
+                    if self.counter >= (self.canvas_size[0] - self.ui_space) // 2:
+                        self.day += 1
+                        self.counter = 0
+
                         # time.sleep(0.001)     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
 
                 self.window.update_idletasks()
