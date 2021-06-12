@@ -3,6 +3,8 @@ from tkinter import *
 import random
 
 # Ανακλαστικός πράκτορας τεχνητής νοημοσύνης
+
+
 class ReflexAgent:
     def __init__(self, simENV, state, color, condition):
         self.simENV = simENV
@@ -27,6 +29,9 @@ class ReflexAgent:
         # Η κατάσταση όπου βρίσκεται το κατάστημα που προτιμάει.
         self.pref_shop_state = (None, None)
 
+        # Κάθε πόσες μέρες θα επισκέπτεται ο πράκτορας το κέντρο.
+        self.center_days = random.randint(2, 5)
+
     # Μέθοδος εύρεσης του καταστήματος προτίμησης βάσει τοποθεσίας.
     def preferred_shop(self, shop_list):
         min_d = float('inf')
@@ -41,7 +46,8 @@ class ReflexAgent:
 
     # Μέθοδος εύρεσης της επόμενης κατάστασης στην οποία σκοπεύει να μετακινηθεί ο πράκτορας
     def find_next_state(self, goal_state):
-        successor_states = hf.neighbor_states(self.state, 1, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
+        successor_states = hf.neighbor_states(
+            self.state, 1, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
         min_cost = float('inf')
         next_state = self.state
         # Για κάθε γειτονική κατάσταση από την τωρινή του πράκτορα υπολόγισε το κόστος μετακίνησης σε αυτήν
@@ -67,18 +73,18 @@ class ReflexAgent:
         possibility_range = [0, 100]
 
         for i in neighbors:
-            for j in self.simENV.agent_grid[i[0]] [i[1]]:
+            for j in self.simENV.agent_grid[i[0]][i[1]]:
                 if random.randint(possibility_range[0], possibility_range[1]) == 2:
                     if j.condition == "sick" and self.condition == "healthy":
-                        self.canvas.itemconfig(self.circle, fill = "red")
+                        self.canvas.itemconfig(self.circle, fill="red")
                         self.condition = "sick"
                         self.simENV.sick_population += 1
 
                     elif self.condition == "sick" and j.condition == "healthy":
-                        self.canvas.itemconfig(j.circle, fill = "red")
+                        self.canvas.itemconfig(j.circle, fill="red")
                         j.condition = "sick"
                         self.simENV.sick_population += 1
-                        
+
                     return True
         return False
 
