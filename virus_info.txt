@@ -1,0 +1,10 @@
+Name: COVID-19
+Basic Symptoms: XXXX
+
+Transmission Probability
+General: 90%
+With mask: 1.5%
+Keeping distance: X%
+
+Recovery rate: Xdays
+Mortality rate: X%

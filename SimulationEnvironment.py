@@ -8,11 +8,10 @@ import time
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
 class Simulation:
-    def __init__(self, canvas_size, population, agent_size, shop_population, sick_population, ui_space=200):
+    def __init__(self, canvas_size, population, agent_size, sick_population, ui_space=200):
         self.canvas_size = canvas_size
         self.population = population
         self.agent_size = agent_size
-        self.shop_population = shop_population
         self.sick_population = sick_population
         self.agent_list = []
         self.shop_list = []
@@ -47,17 +46,28 @@ class Simulation:
             self.running = True
 
             # Δημιούργησε τα καταστήματα και τοποθέτησέ τα στη λίστα shop_list.
-            for i in range(self.shop_population):
-                self.shop_list.append(Shop(self.canvas, (random.randint(0, self.canvas_size[0] - self.ui_space), random.randint(
-                    0, self.canvas_size[1])), random.randint(15, 20), random.randint(15, 20)))
+            self.shop_list.append(
+                Shop(self.canvas, (20, self.canvas_size[1]//2), random.randint(15, 20), random.randint(15, 20)))
+            self.shop_list.append(
+                Shop(self.canvas, (self.canvas_size[0]-self.ui_space-20, self.canvas_size[1]//2), random.randint(15, 20), random.randint(15, 20)))
+            self.shop_list.append(
+                Shop(self.canvas, ((self.canvas_size[0]-self.ui_space)//2, 20), random.randint(15, 20), random.randint(15, 20)))
+            self.shop_list.append(
+                Shop(self.canvas, ((self.canvas_size[0]-self.ui_space)//2, self.canvas_size[1]-20), random.randint(15, 20), random.randint(15, 20)))
+
+            # Δημιουργία κέντρου κοινότητας.
+            self.center = Center(
+                self.canvas, self.canvas_size, self.ui_space, 40, 40)
 
             # Δημιούργησε τους πράκτορες και τοποθέτησέ τους στη λίστα agent_list.
             for i in range(self.sick_population):
                 ag_x = random.randint(0, self.canvas_size[0] - self.ui_space)
                 ag_y = random.randint(0, self.canvas_size[1])
+                m_d_s_x = 75
+                m_d_s_y = 50
 
                 for shop in self.shop_list:
-                    while ag_x >= shop.x1 and ag_x <= shop.x2 and ag_y >= shop.y1 and ag_y <= shop.y2:
+                    while ag_x >= (shop.x1 - m_d_s_x) and ag_x <= (shop.x2 + m_d_s_x) and ag_y >= (shop.y1 - m_d_s_y) and ag_y <= (shop.y2 + m_d_s_y):
                         ag_x = random.randint(
                             0, self.canvas_size[0] - self.ui_space)
                         ag_y = random.randint(0, self.canvas_size[1])
@@ -89,7 +99,7 @@ class Simulation:
 
             # Μετρητές των loop και των ημερών
             self.counter = 0
-            self.day = 0
+            self.day = 1
 
             # mainloop
             while self.running:
@@ -99,7 +109,7 @@ class Simulation:
                 # Επίσης έλεγξε αν ο πράκτορας πρέπει να μολυνθεί ή να μολύνει κάποιον άλλον
                 if not self.is_paused:
                     for agent in self.agent_list:
-                        if agent.state == agent.pref_shop_state:
+                        if agent.state == agent.pref_shop_state or agent.state == self.center.state:
                             agent.reached_destination = True
                         elif agent.state == agent.home_state:
                             agent.reached_destination = False
@@ -107,7 +117,10 @@ class Simulation:
                         if agent.reached_destination:
                             agent.find_next_state(agent.home_state)
                         else:
-                            agent.find_next_state(agent.pref_shop_state)
+                            if (self.day % agent.center_days) == 0:
+                                agent.find_next_state(self.center.state)
+                            else:
+                                agent.find_next_state(agent.pref_shop_state)
 
                         agent.update_conditions()
                         self._ui.update_counters()
@@ -120,7 +133,9 @@ class Simulation:
                         self.day += 1
                         self.counter = 0
 
-                        # time.sleep(0.001)     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
+                if self.population < 30:
+                    # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
+                    time.sleep(0.001/self.population)
 
                 self.window.update_idletasks()
                 self.window.update()
@@ -143,3 +158,21 @@ class Shop:
 
         self.rect = self.canvas.create_rectangle(
             self.x1, self.y1, self.x2, self.y2, fill="peru")
+
+
+# Το κέντρο της κοινότητας απ' όπου περνάει κάθε πράκτορας κάποια στιγμή
+class Center:
+    def __init__(self, canvas, canvas_size, ui_space, width, height):
+        self.canvas = canvas
+        self.canvas_size = canvas_size
+        self.width = width
+        self.height = height
+
+        self.state = (
+            (self.canvas_size[0]-ui_space)//2, self.canvas_size[1]//2)
+        self.x1 = self.state[0] - width
+        self.y1 = self.state[1] - height
+        self.x2 = self.state[0] + width
+        self.y2 = self.state[1] + height
+        self.rect = self.canvas.create_rectangle(
+            self.x1, self.y1, self.x2, self.y2, fill="green4")
