@@ -88,6 +88,11 @@ class Simulation:
                             0, self.canvas_size[0] - self.ui_space)
                         ag_y = random.randint(0, self.canvas_size[1])
 
+                while ag_x >= (self.center.x1 - m_d_s_x) and ag_x <= (self.center.x2 + m_d_s_x) and ag_y >= (self.center.y1 - m_d_s_y) and ag_y <= (self.center.y2 + m_d_s_y):
+                    ag_x = random.randint(
+                        0, self.canvas_size[0] - self.ui_space)
+                    ag_y = random.randint(0, self.canvas_size[1])
+
                 new_agent = ra.ReflexAgent(
                     self, (ag_x, ag_y), 'turquoise3', "healthy")
                 self.agent_list.append(new_agent)
