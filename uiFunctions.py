@@ -1,10 +1,14 @@
 from tkinter import *
 
 # Η εντολή που θα εκτελεί το κουμπί Stop
+
+
 def stop(simulation):
     simulation.destroy()
 
 # Η εντολή που θα εκτελεί το κουμπί Pause και Play
+
+
 def pause(simulation, btn, ui):
 
     if not simulation.has_started:
@@ -21,3 +25,11 @@ def pause(simulation, btn, ui):
 
     btn["image"] = ui.images[ui.place]
 
+
+def masks(simulation):
+    if simulation.masks == False:
+        simulation.masks = True
+        simulation.masks_helper_var = 15
+    else:
+        simulation.masks = False
+        simulation.masks_helper_var = 900

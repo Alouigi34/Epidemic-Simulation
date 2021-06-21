@@ -22,6 +22,9 @@ class Simulation:
         self.has_started = False    # Ελέγχει αν έχει ξεκινήσει η προσομοίωση
         self.running = False    # Όσο έχει την τιμή True η προσομοίωση τρέχει
 
+        self.masks_helper_var = 900
+        self.masks = False
+
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
 
@@ -30,10 +33,13 @@ class Simulation:
         self.window = Tk()
         self.window.title("Epidemic Simulation")
         self.window.resizable(False, False)
+        try:
+            self.window.iconbitmap('citylab_icon.ico')
+        except:
+            print("Could not find icon...")
         self.canvas = Canvas(
             self.window, width=self.canvas_size[0], height=self.canvas_size[1], bg='gray5')
         self.canvas.pack()
-
         self._ui = ui.Ui(self, self.window)
 
         while not self.has_started:

@@ -66,20 +66,18 @@ class ReflexAgent:
     # Η μέθοδος που ελέγχει αν ο πράκτορας έχει μολυνθεί από την ασθένεια
     def update_conditions(self):
         size = (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0]))
-
         # Για κάθε κοντινή κατάστηση από την τωρινή του πράκτορα δες αν υπάρχουν άλλοι πράκτορες σε αυτές.
         # Αν ναι και κάποιος από αυτούς είναι μολυσμένος, μολύνσου και εσύ. Αν όχι αλλά εσύ είσαι ήδη μολυσμένος, μόλυνέ τους. Αλλιώς, συνέχισε κανονικά.
         neighbors = hf.neighbor_states(self.state, 5, size)
-        possibility_range = [0, 100]
+        possibility_range = [0, 1000]
 
         for i in neighbors:
             for j in self.simENV.agent_grid[i[0]][i[1]]:
-                if random.randint(possibility_range[0], possibility_range[1]) == 2:
+                if random.randint(possibility_range[0], possibility_range[1]) <= self.simENV.masks_helper_var:
                     if j.condition == "sick" and self.condition == "healthy":
                         self.canvas.itemconfig(self.circle, fill="red")
                         self.condition = "sick"
                         self.simENV.sick_population += 1
-
                     elif self.condition == "sick" and j.condition == "healthy":
                         self.canvas.itemconfig(j.circle, fill="red")
                         j.condition = "sick"
