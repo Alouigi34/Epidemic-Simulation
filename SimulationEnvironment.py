@@ -22,6 +22,9 @@ class Simulation:
         self.has_started = False    # Ελέγχει αν έχει ξεκινήσει η προσομοίωση
         self.running = False    # Όσο έχει την τιμή True η προσομοίωση τρέχει
 
+        self.masks_helper_var = 900
+        self.masks = False
+
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
 
@@ -30,10 +33,13 @@ class Simulation:
         self.window = Tk()
         self.window.title("Epidemic Simulation")
         self.window.resizable(False, False)
+        try:
+            self.window.iconbitmap('citylab_icon.ico')
+        except:
+            print("Could not find icon...")
         self.canvas = Canvas(
             self.window, width=self.canvas_size[0], height=self.canvas_size[1], bg='gray5')
         self.canvas.pack()
-
         self._ui = ui.Ui(self, self.window)
 
         while not self.has_started:
@@ -87,6 +93,11 @@ class Simulation:
                         ag_x = random.randint(
                             0, self.canvas_size[0] - self.ui_space)
                         ag_y = random.randint(0, self.canvas_size[1])
+
+                while ag_x >= (self.center.x1 - m_d_s_x) and ag_x <= (self.center.x2 + m_d_s_x) and ag_y >= (self.center.y1 - m_d_s_y) and ag_y <= (self.center.y2 + m_d_s_y):
+                    ag_x = random.randint(
+                        0, self.canvas_size[0] - self.ui_space)
+                    ag_y = random.randint(0, self.canvas_size[1])
 
                 new_agent = ra.ReflexAgent(
                     self, (ag_x, ag_y), 'turquoise3', "healthy")

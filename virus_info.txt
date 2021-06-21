@@ -1,10 +1,10 @@
 Name: COVID-19
-Basic Symptoms: XXXX
+Basic Symptoms: fever, dry cough, tiredness, death, pain
 
 Transmission Probability
 General: 90%
 With mask: 1.5%
-Keeping distance: X%
+Keeping distance: 6%
 
-Recovery rate: Xdays
-Mortality rate: X%
+Recovery rate: 14 days
+Mortality rate: 2.17%
