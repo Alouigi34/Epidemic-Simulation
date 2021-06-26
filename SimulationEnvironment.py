@@ -4,7 +4,7 @@ from typing import Counter
 import ReflexAgent as ra
 import ui
 import time
-import virus as vi
+
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
 class Simulation:
@@ -24,6 +24,7 @@ class Simulation:
 
         self.masks_helper_var = 900
         self.masks = False
+        self.distance = False
 
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
@@ -34,16 +35,13 @@ class Simulation:
         self.window.title("Epidemic Simulation")
         self.window.resizable(False, False)
         try:
-            self.window.iconbitmap('images/citylab_icon.ico')
+            self.window.iconbitmap('citylab_icon.ico')
         except:
             print("Could not find icon...")
         self.canvas = Canvas(
             self.window, width=self.canvas_size[0], height=self.canvas_size[1], bg='gray5')
         self.canvas.pack()
         self._ui = ui.Ui(self, self.window)
-
-        virus = vi.Virus("virus_info.txt")
-        print("Virus Data: \n", virus.data)
 
         while not self.has_started:
             self.window.update_idletasks()

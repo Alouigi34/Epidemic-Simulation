@@ -61,7 +61,9 @@ class ReflexAgent:
 
     # Η συνάρτηση αξιολόγησης (προς το παρόν ο πράκτορας αξιολογεί βάσει ελάχιστης απόστασης από τον στόχο).
     def evaluation_function(self, start_state, goal_state):
+        # Αν δεν χρειάζεται να κρατήσουν αποστάσεις τότε επέστρεψε τη min_distance
         return hf.min_distance(start_state, goal_state)
+        # Αλλιώς
 
     # Η μέθοδος που ελέγχει αν ο πράκτορας έχει μολυνθεί από την ασθένεια
     def update_conditions(self):
