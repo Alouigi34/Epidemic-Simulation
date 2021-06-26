@@ -33,3 +33,10 @@ def masks(simulation):
     else:
         simulation.masks = False
         simulation.masks_helper_var = 900
+
+
+def distance(simulation):
+    if simulation.distance:
+        simulation.distance = False
+    else:
+        simulation.distance = True

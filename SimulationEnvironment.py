@@ -24,6 +24,7 @@ class Simulation:
 
         self.masks_helper_var = 900
         self.masks = False
+        self.distance = False
 
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
