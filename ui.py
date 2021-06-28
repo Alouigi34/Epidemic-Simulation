@@ -10,10 +10,12 @@ class Ui:
     def __init__(self, simulation, window):
         self.simulation = simulation
         self.window = window
+        
         # Εικόνες που θα χρησιμοποιήσουμε
         self.pause_image = PhotoImage(file=r"images/pause.png")
         self.play_image = PhotoImage(file=r"images/play.png")
         self.stop_image = PhotoImage(file=r"images/stop.png")
+        
         # Μετρητής για τους υγιείς
         self.healthy_counter = Label(
             window, text=f"Healhty: {self.simulation.population} (100%)")
@@ -22,6 +24,7 @@ class Ui:
         self.healthy_counter.place(
             x=self.simulation.canvas_size[0] - self.simulation.ui_space + 30, y=self.simulation.canvas_size[1] // 8 + 40)
 
+        # Μετρητής των ημερών
         self.date_counter = Label(window, text="Day: 0")
         self.date_counter.config(font=("Arial", 16))
         self.date_counter.pack()
@@ -43,12 +46,14 @@ class Ui:
         self.mask_label.pack()
         self.mask_label.place(x=self.simulation.canvas_size[0] - self.simulation.ui_space +
                               self.simulation.ui_space // 3 + 50, y=self.simulation.canvas_size[1] // 8 + 180)
+        
         # Δημιουργία ετικέτας αποστάσεων
         self.distance_label = Label(window, text=f"off")
         self.distance_label.config(font=("Arial", 13))
         self.distance_label.pack()
         self.distance_label.place(x=self.simulation.canvas_size[0] - self.simulation.ui_space +
                                   self.simulation.ui_space // 3 + 90, y=self.simulation.canvas_size[1] // 8 + 220)
+        
         # Δημιουργία του κουμπιού Pause και Play
         pause_button = Button(self.window, text="Play", image=self.play_image,
                               command=lambda: pause(self.simulation, pause_button, self))
@@ -56,12 +61,13 @@ class Ui:
         pause_button.place(
             x=self.simulation.canvas_size[0] - self.simulation.ui_space + 30, y=self.simulation.canvas_size[1] // 8)
 
-        # Δημιουργία του κουμπιού Start
+        # Δημιουργία του κουμπιού Stοp
         stop_button = Button(self.window, text="Stop",
                              image=self.stop_image, command=lambda: stop(self.simulation))
         stop_button.pack()
         stop_button.place(x=self.simulation.canvas_size[0] - self.simulation.ui_space +
                           self.simulation.ui_space // 3, y=self.simulation.canvas_size[1] // 8)
+        
         # Δημιουργία του Κουμπιού masks on/off
         mask_button = Button(self.window, text="Masks On/Off",
                              command=lambda: masks(self.simulation))
@@ -81,6 +87,7 @@ class Ui:
         self.sick_counter["text"] = f"Sick: {self.simulation.sick_population} ({round(self.simulation.sick_population / self.simulation.population * 100, 1)}%)"
         self.healthy_counter[
             "text"] = f"Healthy: {self.simulation.population - self.simulation.sick_population} ({round((self.simulation.population - self.simulation.sick_population) / self.simulation.population * 100, 1)}%)"
+        
         if self.simulation.masks == True:
             self.mask_label["text"] = "on"
         else:
