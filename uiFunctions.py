@@ -1,14 +1,10 @@
 from tkinter import *
 
 # Η εντολή που θα εκτελεί το κουμπί Stop
-
-
 def stop(simulation):
     simulation.destroy()
 
 # Η εντολή που θα εκτελεί το κουμπί Pause και Play
-
-
 def pause(simulation, btn, ui):
 
     if not simulation.has_started:
@@ -25,7 +21,7 @@ def pause(simulation, btn, ui):
 
     btn["image"] = ui.images[ui.place]
 
-
+# Η εντολή που θα εκτελεί το κουμπί Masks On/Off
 def masks(simulation):
     if simulation.masks == False:
         simulation.masks = True
@@ -34,9 +30,22 @@ def masks(simulation):
         simulation.masks = False
         simulation.masks_helper_var = 900
 
-
+# Η εντολή που θα εκτελεί το κουμπί Keep distances On/Off
 def distance(simulation):
     if simulation.distance:
         simulation.distance = False
     else:
         simulation.distance = True
+
+# Η εντολή που θα εκτελεί το κουμπί Lockdown On/Off
+def lockdown(simulation):
+    if simulation.lockdown:
+        simulation.lockdown = False
+        for i in simulation.agent_list:
+            i.in_lockdown = False
+    else:
+        simulation.lockdown = True
+        for i in simulation.agent_list:
+            i.in_lockdown = True
+
+ 
