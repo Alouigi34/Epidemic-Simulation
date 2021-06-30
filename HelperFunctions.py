@@ -19,24 +19,30 @@ def neighbor_states(state, _range, grid_size):
 
 # Συνάρτηση που διαβάζει το αρχείο txt με τα δεδομένα του ιού
 def read_virus_file(file):
-     data = {}
+    data = {}
 
-     file = open(file, "r")
-     file = file.read().split("\n")
+    file = open(file, "r")
+    file = file.read().split("\n")
 
-     for i in file:
-         if i == "":
-             file.remove(i)
-     file.remove(file[2])
+    for i in file:
+        if i == "":
+            file.remove(i)
+    file.remove(file[2])
 
-     data["name"] = file[0][6:]
-     data["symptoms"] = file[1][16:].split(", ")
+    data["name"] = file[0][5:].translate({ord(' ') : None })
+    symptoms = file[1][15:].split(",")
 
-     data["general_transmission"] = float(file[2][9 : len(file[2]) - 1])  / 100
-     data["mask_transmission"] = float(file[3][11 : len(file[3]) - 1])  / 100
-     data["distance_transmission"] = float(file[4][18: len(file[4]) - 1])  / 100
+    for i in range(len(symptoms)):
+        symptoms[i] = symptoms[i].translate({ord(' ') : None})
+        symptoms[i] = symptoms[i].translate({ord('-') : ord(' ')})
 
-     data["recovery_rate"] = int(file[5][15 : len(file[5]) - 4])
-     data["mortality_rate"] = float(file[6][16 : len(file[6]) - 1])  / 100
+    data["symptoms"] = symptoms
 
-     return data 
+    data["general_transmission"] = float(file[2][8 : len(file[2]) - 1])  / 100
+    data["mask_transmission"] = float(file[3][10 : len(file[3]) - 1])  / 100
+    data["distance_transmission"] = float(file[4][17: len(file[4]) - 1])  / 100
+
+    data["recovery_rate"] = int(file[5][14 : len(file[5]) - 4])
+    data["mortality_rate"] = float(file[6][15 : len(file[6]) - 1])  / 100
+
+    return data 
