@@ -23,6 +23,8 @@ class ReflexAgent:
         self.home_state = state     # Η κατάσταση όπου 'γεννιέται' ο πράκτορας.
         self.next_state = self.state
 
+        self.in_lockdown = False
+
         # Η μεταβλητή στην οποία αποθηκεύεται αν έφτασε ο πράκτορας στον προορισμό του
         self.reached_destination = False
 
@@ -31,6 +33,9 @@ class ReflexAgent:
 
         # Κάθε πόσες μέρες θα επισκέπτεται ο πράκτορας το κέντρο.
         self.center_days = random.randint(2, 5)
+
+        # Kάθε πόσες μέρες ο πράκτορας θα βγαίνει από το σπίτι το σε lockdown
+        self.shop_in_lockdown = random.randint(2, 7)
 
     # Μέθοδος εύρεσης του καταστήματος προτίμησης βάσει τοποθεσίας.
     def preferred_shop(self, shop_list):

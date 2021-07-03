@@ -1,5 +1,5 @@
 Name: COVID-19
-Basic Symptoms: fever, dry cough, tiredness, death, pain
+Basic Symptoms: fever, dry-cough, tiredness, death, pain
 
 Transmission Probability
 General: 90%

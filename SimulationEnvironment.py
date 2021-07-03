@@ -4,6 +4,7 @@ from typing import Counter
 import ReflexAgent as ra
 import ui
 import time
+import Virus as vi
 
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
@@ -25,6 +26,7 @@ class Simulation:
         self.masks_helper_var = 900
         self.masks = False
         self.distance = False
+        self.lockdown = False
 
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
@@ -35,13 +37,16 @@ class Simulation:
         self.window.title("Epidemic Simulation")
         self.window.resizable(False, False)
         try:
-            self.window.iconbitmap('citylab_icon.ico')
+            self.window.iconbitmap('images/citylab_icon.ico')
         except:
             print("Could not find icon...")
         self.canvas = Canvas(
             self.window, width=self.canvas_size[0], height=self.canvas_size[1], bg='gray5')
         self.canvas.pack()
         self._ui = ui.Ui(self, self.window)
+
+        virus = vi.Virus("virus_info.txt")
+        print("Virus Data: \n", virus.data)
 
         while not self.has_started:
             self.window.update_idletasks()
@@ -116,24 +121,33 @@ class Simulation:
             # mainloop
             while self.running:
                 # Αν η προσομοίωση δεν έχει "παγώσει"
-                # Για κάθε πράκτορα βρες αν έχει φτάσει τον προοσισμό του.
-                # Αν ναι, μετακίνησέ τον πίσω στο "σπίτι" του. Αν όχι, συνέχισε να για τον φτάσεις.
-                # Επίσης έλεγξε αν ο πράκτορας πρέπει να μολυνθεί ή να μολύνει κάποιον άλλον
                 if not self.is_paused:
+                    # Για κάθε πράκτορα
                     for agent in self.agent_list:
+                        # Αν έχει φτάσει στο κατάστημα ή στο κέντρο, έχει φτάσει στον προορισμό του
                         if agent.state == agent.pref_shop_state or agent.state == self.center.state:
                             agent.reached_destination = True
                         elif agent.state == agent.home_state:
                             agent.reached_destination = False
 
-                        if agent.reached_destination:
+                        # Αν επικρατεί lockdown, δες αν έχει έρθει η στιγμή να βγει ο πράκτορας έξω
+                        if self.lockdown:
+                            if (self.day % agent.shop_in_lockdown) == 0:
+                                agent.in_lockdown = False
+                            else:
+                                agent.in_lockdown = True
+
+                        # Αν ο πράκτορας έχει φτάσει τον προορισμό του ή επικρατεί lockdown, να επιστρέψει στο σπίτι του
+                        if agent.reached_destination or agent.in_lockdown:
                             agent.find_next_state(agent.home_state)
                         else:
+                            # Αλλιώς, μετακίνησε τον πράκτορα στο κατάστημα ή στο κέντρο
                             if (self.day % agent.center_days) == 0:
                                 agent.find_next_state(self.center.state)
                             else:
                                 agent.find_next_state(agent.pref_shop_state)
 
+                        # Δες αν ο πράκτορας πρέπει να μολυνθεί ή να μολύνει κάποιον άλλον και ενημέρωσε το UI
                         agent.update_conditions()
                         self._ui.update_counters()
 
