@@ -54,7 +54,7 @@ class ReflexAgent:
         successor_states = hf.neighbor_states(
             self.state, 1, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
         min_cost = float('inf')
-        next_state = self.state
+        next_state = None
         # Για κάθε γειτονική κατάσταση από την τωρινή του πράκτορα υπολόγισε το κόστος μετακίνησης σε αυτήν
         # βάσει μίας συνάρτησης αξιολόγησης. Ο πράκτορας επιλέγει την μετακίνηση με το μικρότερο κόστος.
         for succesor in successor_states:
@@ -65,17 +65,32 @@ class ReflexAgent:
         self.next_state = next_state
 
     # Η συνάρτηση αξιολόγησης (προς το παρόν ο πράκτορας αξιολογεί βάσει ελάχιστης απόστασης από τον στόχο).
-    def evaluation_function(self, start_state, goal_state):
+    def evaluation_function(self, new_state, goal_state):
         # Αν δεν χρειάζεται να κρατήσουν αποστάσεις τότε επέστρεψε τη min_distance
-        return hf.min_distance(start_state, goal_state)
+        if not self.simENV.distance:
+            return hf.min_distance(new_state, goal_state)
         # Αλλιώς
+        else:
+            neighbors = hf.neighbor_states(new_state, 5, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
+            total_score = hf.min_distance(new_state, goal_state)
+
+            #agents = 0
+
+            for state in neighbors:
+                for i in self.simENV.agent_grid[state[0]] [state[1]]:
+                    if i != self:
+                        total_score += 1 / (hf.min_distance(new_state, state) + 1) * 2
+                        #agents += 1
+
+            #total_score *= agents
+            return total_score
 
     # Η μέθοδος που ελέγχει αν ο πράκτορας έχει μολυνθεί από την ασθένεια
     def update_conditions(self):
         size = (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0]))
         # Για κάθε κοντινή κατάστηση από την τωρινή του πράκτορα δες αν υπάρχουν άλλοι πράκτορες σε αυτές.
         # Αν ναι και κάποιος από αυτούς είναι μολυσμένος, μολύνσου και εσύ. Αν όχι αλλά εσύ είσαι ήδη μολυσμένος, μόλυνέ τους. Αλλιώς, συνέχισε κανονικά.
-        neighbors = hf.neighbor_states(self.state, 5, size)
+        neighbors = hf.neighbor_states(self.state, 3, size)
         possibility_range = [0, 1000]
 
         for i in neighbors:

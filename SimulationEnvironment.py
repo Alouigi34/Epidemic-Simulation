@@ -149,8 +149,6 @@ class Simulation:
 
                         # Δες αν ο πράκτορας πρέπει να μολυνθεί ή να μολύνει κάποιον άλλον και ενημέρωσε το UI
                         agent.update_conditions()
-                        self._ui.update_counters()
-
                         # Ενημέρωσε τη θέση του πράκτορα
                         agent.update()
 
@@ -166,6 +164,7 @@ class Simulation:
 
                 self.window.update_idletasks()
                 self.window.update()
+                self._ui.update_counters()
 
     def destroy(self):
         self.window.destroy()
