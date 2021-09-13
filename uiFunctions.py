@@ -26,20 +26,40 @@ def pause(simulation, btn, ui):
 
 # Η εντολή που θα εκτελεί το κουμπί Masks On/Off
 def masks(simulation):
-    if simulation.masks == False:
-        simulation.masks = True
-        simulation.masks_helper_var = 15
+    if simulation.masks:
+        if simulation.distance == False:    
+            simulation.masks = False
+            simulation.masks_helper_var = (simulation.general_transmission)*1000
+        else:
+            simulation.masks = False
+            simulation.masks_helper_var = (simulation.distance_transmission)*1000
     else:
-        simulation.masks = False
-        simulation.masks_helper_var = 900
+        if simulation.distance == False:
+            simulation.masks = True
+            simulation.masks_helper_var = (simulation.mask_transmission)*1000
+        else:
+            simulation.masks = True
+            simulation.masks_helper_var = ((simulation.distance_transmission)*(simulation.mask_transmission))*1000
+
 
 
 # Η εντολή που θα εκτελεί το κουμπί Keep distances On/Off
 def distance(simulation):
     if simulation.distance:
-        simulation.distance = False
+        if simulation.masks == False:    
+            simulation.distance = False
+            simulation.masks_helper_var = (simulation.general_transmission)*1000
+        else:
+            simulation.distance = False
+            simulation.masks_helper_var = (simulation.mask_transmission)*1000
     else:
-        simulation.distance = True
+        if simulation.masks == False:
+            simulation.distance = True
+            simulation.masks_helper_var = (simulation.distance_transmission)*1000
+        else:
+            simulation.distance = True
+            simulation.masks_helper_var = ((simulation.distance_transmission)*(simulation.mask_transmission))*1000
+
 
 
 # Η εντολή που θα εκτελεί το κουμπί Lockdown On/Off

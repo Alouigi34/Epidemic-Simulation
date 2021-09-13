@@ -15,3 +15,8 @@ class Virus:
 
         self.recovery_rate = self.data["recovery_rate"]
         self.mortality_rate = self.data["mortality_rate"]
+
+        #print(self.data,"\n",self.name,"\n",self.symptoms,"\n",self.general_transmission,"\n",self.mask_transmission,"\n",self.distance_transmission,"\n",self.recovery_rate,"\n",self.mortality_rate,"\n")
+
+if __name__ == "__main__":
+    Virus("virus_info.txt")
