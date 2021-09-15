@@ -7,9 +7,10 @@ import time
 import Virus as vi
 
 
+
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
 class Simulation:
-    def __init__(self, canvas_size, population, agent_size, sick_population, ui_space=200):
+    def __init__(self, canvas_size, population, agent_size, sick_population, ui_space=200,):
         self.canvas_size = canvas_size
         self.population = population
         self.agent_size = agent_size
@@ -27,6 +28,12 @@ class Simulation:
         self.masks = False
         self.distance = False
         self.lockdown = False
+
+        #Transmission Probability
+        c=vi.Virus("virus_info.txt")
+        self.general_transmission = c.general_transmission
+        self.mask_transmission = c.mask_transmission
+        self.distance_transmission = c.distance_transmission
 
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
