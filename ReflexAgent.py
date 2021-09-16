@@ -36,7 +36,7 @@ class ReflexAgent:
 
         # Kάθε πόσες μέρες ο πράκτορας θα βγαίνει από το σπίτι το σε lockdown
         self.shop_in_lockdown = random.randint(2, 7)
-        
+
     # Μέθοδος εύρεσης του καταστήματος προτίμησης βάσει τοποθεσίας.
     def preferred_shop(self, shop_list):
         min_d = float('inf')
@@ -65,17 +65,30 @@ class ReflexAgent:
         self.next_state = next_state
 
     # Η συνάρτηση αξιολόγησης (προς το παρόν ο πράκτορας αξιολογεί βάσει ελάχιστης απόστασης από τον στόχο).
-    def evaluation_function(self, start_state, goal_state):
+    def evaluation_function(self, new_state, goal_state):
         # Αν δεν χρειάζεται να κρατήσουν αποστάσεις τότε επέστρεψε τη min_distance
-        return hf.min_distance(start_state, goal_state)
+        if not self.simENV.distance:
+            return hf.min_distance(new_state, goal_state)
         # Αλλιώς
+        else:
+            neighbors = hf.neighbor_states(
+                new_state, 5, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
+            total_score = hf.min_distance(new_state, goal_state)
+
+            for state in neighbors:
+                for i in self.simENV.agent_grid[state[0]][state[1]]:
+                    if i != self:
+                        total_score += 1 / \
+                            (hf.min_distance(new_state, state) + 1) * 2
+
+            return total_score
 
     # Η μέθοδος που ελέγχει αν ο πράκτορας έχει μολυνθεί από την ασθένεια
     def update_conditions(self):
         size = (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0]))
         # Για κάθε κοντινή κατάστηση από την τωρινή του πράκτορα δες αν υπάρχουν άλλοι πράκτορες σε αυτές.
         # Αν ναι και κάποιος από αυτούς είναι μολυσμένος, μολύνσου και εσύ. Αν όχι αλλά εσύ είσαι ήδη μολυσμένος, μόλυνέ τους. Αλλιώς, συνέχισε κανονικά.
-        neighbors = hf.neighbor_states(self.state, 5, size)
+        neighbors = hf.neighbor_states(self.state, 3, size)
         possibility_range = [0, 1000]
 
         for i in neighbors:
@@ -128,3 +141,4 @@ class ReflexAgent:
 
         # Πλέον, η τωρινή κατάσταση του πράκτορα είναι αυτή που μέχρι προηγουμένως ήταν η επόμενη.
         self.state = self.next_state
+#

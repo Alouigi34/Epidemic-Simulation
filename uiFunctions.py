@@ -1,8 +1,10 @@
 from tkinter import *
 
+
 # Η εντολή που θα εκτελεί το κουμπί Stop
 def stop(simulation):
     simulation.destroy()
+
 
 # Η εντολή που θα εκτελεί το κουμπί Pause και Play
 def pause(simulation, btn, ui):
@@ -21,21 +23,44 @@ def pause(simulation, btn, ui):
 
     btn["image"] = ui.images[ui.place]
 
+
 # Η εντολή που θα εκτελεί το κουμπί Masks On/Off
 def masks(simulation):
-    if simulation.masks == False:
-        simulation.masks = True
-        simulation.masks_helper_var = 15
+    if simulation.masks:
+        if simulation.distance == False:    
+            simulation.masks = False
+            simulation.masks_helper_var = (simulation.general_transmission)*1000
+        else:
+            simulation.masks = False
+            simulation.masks_helper_var = (simulation.distance_transmission)*1000
     else:
-        simulation.masks = False
-        simulation.masks_helper_var = 900
+        if simulation.distance == False:
+            simulation.masks = True
+            simulation.masks_helper_var = (simulation.mask_transmission)*1000
+        else:
+            simulation.masks = True
+            simulation.masks_helper_var = ((simulation.distance_transmission)*(simulation.mask_transmission))*1000
+
+
 
 # Η εντολή που θα εκτελεί το κουμπί Keep distances On/Off
 def distance(simulation):
     if simulation.distance:
-        simulation.distance = False
+        if simulation.masks == False:    
+            simulation.distance = False
+            simulation.masks_helper_var = (simulation.general_transmission)*1000
+        else:
+            simulation.distance = False
+            simulation.masks_helper_var = (simulation.mask_transmission)*1000
     else:
-        simulation.distance = True
+        if simulation.masks == False:
+            simulation.distance = True
+            simulation.masks_helper_var = (simulation.distance_transmission)*1000
+        else:
+            simulation.distance = True
+            simulation.masks_helper_var = ((simulation.distance_transmission)*(simulation.mask_transmission))*1000
+
+
 
 # Η εντολή που θα εκτελεί το κουμπί Lockdown On/Off
 def lockdown(simulation):
@@ -47,5 +72,3 @@ def lockdown(simulation):
         simulation.lockdown = True
         for i in simulation.agent_list:
             i.in_lockdown = True
-
- 
