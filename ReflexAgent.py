@@ -36,7 +36,7 @@ class ReflexAgent:
 
         # Kάθε πόσες μέρες ο πράκτορας θα βγαίνει από το σπίτι το σε lockdown
         self.shop_in_lockdown = random.randint(2, 7)
-
+        
     # Μέθοδος εύρεσης του καταστήματος προτίμησης βάσει τοποθεσίας.
     def preferred_shop(self, shop_list):
         min_d = float('inf')
@@ -54,7 +54,7 @@ class ReflexAgent:
         successor_states = hf.neighbor_states(
             self.state, 1, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
         min_cost = float('inf')
-        next_state = self.state
+        next_state = None
         # Για κάθε γειτονική κατάσταση από την τωρινή του πράκτορα υπολόγισε το κόστος μετακίνησης σε αυτήν
         # βάσει μίας συνάρτησης αξιολόγησης. Ο πράκτορας επιλέγει την μετακίνηση με το μικρότερο κόστος.
         for succesor in successor_states:
@@ -71,16 +71,18 @@ class ReflexAgent:
             return hf.min_distance(new_state, goal_state)
         # Αλλιώς
         else:
-            neighbors = hf.neighbor_states(
-                new_state, 5, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
+            neighbors = hf.neighbor_states(new_state, 5, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
             total_score = hf.min_distance(new_state, goal_state)
 
-            for state in neighbors:
-                for i in self.simENV.agent_grid[state[0]][state[1]]:
-                    if i != self:
-                        total_score += 1 / \
-                            (hf.min_distance(new_state, state) + 1) * 2
+            #agents = 0
 
+            for state in neighbors:
+                for i in self.simENV.agent_grid[state[0]] [state[1]]:
+                    if i != self:
+                        total_score += 1 / (hf.min_distance(new_state, state) + 1) * 2
+                        #agents += 1
+
+            #total_score *= agents
             return total_score
 
     # Η μέθοδος που ελέγχει αν ο πράκτορας έχει μολυνθεί από την ασθένεια
@@ -141,4 +143,3 @@ class ReflexAgent:
 
         # Πλέον, η τωρινή κατάσταση του πράκτορα είναι αυτή που μέχρι προηγουμένως ήταν η επόμενη.
         self.state = self.next_state
-#
