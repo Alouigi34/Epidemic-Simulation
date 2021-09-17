@@ -23,6 +23,8 @@ class ReflexAgent:
         self.home_state = state     # Η κατάσταση όπου 'γεννιέται' ο πράκτορας.
         self.next_state = self.state
 
+        self.sick_days = 0
+
         self.in_lockdown = False
 
         # Η μεταβλητή στην οποία αποθηκεύεται αν έφτασε ο πράκτορας στον προορισμό του
@@ -100,13 +102,25 @@ class ReflexAgent:
                         self.canvas.itemconfig(self.circle, fill="red")
                         self.condition = "sick"
                         self.simENV.sick_population += 1
+                        self.sick_days += 1
                     elif self.condition == "sick" and j.condition == "healthy":
                         self.canvas.itemconfig(j.circle, fill="red")
                         j.condition = "sick"
                         self.simENV.sick_population += 1
 
                     return True
+
+        if self.sick_days >= self.simENV.recovery_rate:
+            self.condition = "recovered"
+            self.canvas.itemconfig(self.circle, fill="green")
+            self.sick_days = 0
+
         return False
+
+    def check_death(self):
+        if (round(self.simENV.mortality_rate) >= random.randint(0, 100)) and self.condition == "sick":
+            self.canvas.itemconfig(self.circle, fill="grey")
+            self.condition = "deceased"
 
     # Η μέθοδος αυτή καλείται για να ανανεώσει την κατάσταση του πράκτορα.
     def update(self):

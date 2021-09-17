@@ -30,10 +30,12 @@ class Simulation:
         self.lockdown = False
 
         #Transmission Probability
-        c=vi.Virus("virus_info.txt")
+        c = vi.Virus("virus_info.txt")
         self.general_transmission = c.general_transmission
         self.mask_transmission = c.mask_transmission
         self.distance_transmission = c.distance_transmission
+        self.mortality_rate = c.mortality_rate 
+        self.recovery_rate = c.recovery_rate
 
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
@@ -51,9 +53,6 @@ class Simulation:
             self.window, width=self.canvas_size[0], height=self.canvas_size[1], bg='gray5')
         self.canvas.pack()
         self._ui = ui.Ui(self, self.window)
-
-        virus = vi.Virus("virus_info.txt")
-        print("Virus Data: \n", virus.data)
 
         while not self.has_started:
             self.window.update_idletasks()
@@ -92,6 +91,7 @@ class Simulation:
                         ag_y = random.randint(0, self.canvas_size[1])
 
                 new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'red', "sick")
+                new_agent.sick_days += 1
                 self.agent_list.append(new_agent)
                 self.agent_grid[ag_x][ag_y].append(new_agent)
 
@@ -160,11 +160,17 @@ class Simulation:
                         # Ενημέρωσε τη θέση του πράκτορα
                         agent.update()
 
-                    # Αν χρειαστεί, άλλαξε τη μέρα
+                    # Αν χρειαστεί, άλλαξε τη μέρα και έλεγξε αν πρέπει να πεθάνει κάποιος ή να αναρρώσει
                     self.counter += 1
                     if self.counter >= (self.canvas_size[0] - self.ui_space) // 2:
                         self.day += 1
                         self.counter = 0
+
+                        for agent in self.agent_list:    
+                            if agent.sick_days > 0:
+                                agent.sick_days += 1
+
+                            agent.check_death()
 
                 if self.population < 30:
                     # Χρειάζεται για μικρό πλήθος πρακτόρων (πχ. 5).
