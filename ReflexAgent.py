@@ -76,15 +76,11 @@ class ReflexAgent:
             neighbors = hf.neighbor_states(new_state, 5, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
             total_score = hf.min_distance(new_state, goal_state)
 
-            #agents = 0
-
             for state in neighbors:
                 for i in self.simENV.agent_grid[state[0]] [state[1]]:
                     if i != self:
                         total_score += 1 / (hf.min_distance(new_state, state) + 1) * 2
-                        #agents += 1
-
-            #total_score *= agents
+                        
             return total_score
 
     # Η μέθοδος που ελέγχει αν ο πράκτορας έχει μολυνθεί από την ασθένεια
@@ -106,20 +102,21 @@ class ReflexAgent:
                     elif self.condition == "sick" and j.condition == "healthy":
                         self.canvas.itemconfig(j.circle, fill="red")
                         j.condition = "sick"
+                        j.sick_days += 1
                         self.simENV.sick_population += 1
 
-                    return True
-
-        if self.sick_days >= self.simENV.recovery_rate:
+        if self.sick_days >= self.simENV.recovery_rate and self.condition == "sick":
             self.condition = "recovered"
+            self.simENV.sick_population -= 1
             self.canvas.itemconfig(self.circle, fill="green")
             self.sick_days = 0
-
-        return False
 
     def check_death(self):
         if (round(self.simENV.mortality_rate) >= random.randint(0, 100)) and self.condition == "sick":
             self.canvas.itemconfig(self.circle, fill="grey")
+            self.simENV.sick_population -= 1
+            self.simENV.population -= 1
+            self.sick_days = 0
             self.condition = "deceased"
 
     # Η μέθοδος αυτή καλείται για να ανανεώσει την κατάσταση του πράκτορα.

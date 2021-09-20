@@ -35,7 +35,7 @@ class Simulation:
         self.mask_transmission = c.mask_transmission
         self.distance_transmission = c.distance_transmission
         self.mortality_rate = c.mortality_rate 
-        self.recovery_rate = c.recovery_rate
+        self.recovery_rate = c.recovery_rate 
 
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
@@ -162,12 +162,12 @@ class Simulation:
 
                     # Αν χρειαστεί, άλλαξε τη μέρα και έλεγξε αν πρέπει να πεθάνει κάποιος ή να αναρρώσει
                     self.counter += 1
-                    if self.counter >= (self.canvas_size[0] - self.ui_space) // 2:
+                    if self.counter >= (self.canvas_size[0] - self.ui_space) // 8:
                         self.day += 1
                         self.counter = 0
 
                         for agent in self.agent_list:    
-                            if agent.sick_days > 0:
+                            if agent.sick_days > 0 and agent.sick_days <= self.recovery_rate:
                                 agent.sick_days += 1
 
                             agent.check_death()

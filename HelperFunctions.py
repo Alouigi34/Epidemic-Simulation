@@ -47,7 +47,7 @@ def read_virus_file(file):
         data["distance_transmission"] = float(
             virus[4][17: len(virus[4]) - 1]) / 100
 
-        data["recovery_rate"] = int(virus[5][14: len(virus[5]) - 4])
-        data["mortality_rate"] = float(virus[6][15: len(virus[6]) - 1]) / 100
+        data["recovery_rate"] = int(virus[5][14: len(virus[5]) - 4]) + 1
+        data["mortality_rate"] = float(virus[6][15: len(virus[6]) - 1]) 
 
         return data
