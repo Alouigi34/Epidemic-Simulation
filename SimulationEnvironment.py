@@ -7,6 +7,8 @@ import time
 import Virus as vi
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
+
+
 class Simulation:
     def __init__(self, canvas_size, population, agent_size, sick_population, ui_space=200,):
         self.canvas_size = canvas_size
@@ -15,6 +17,7 @@ class Simulation:
         self.sick_population = sick_population
         self.recovered_population = 0
         self.deceased_population = 0
+        self.healthy_population = self.population - self.sick_population
         self.agent_list = []
         self.shop_list = []
         self.agent_grid = [
@@ -26,16 +29,17 @@ class Simulation:
         self.masks = False
         self.distance = False
         self.lockdown = False
-        #Transmission Probability
+        # Transmission Probability
         c = vi.Virus("virus_info.txt")
         self.general_transmission = c.general_transmission
         self.mask_transmission = c.mask_transmission
         self.distance_transmission = c.distance_transmission
-        self.mortality_rate = c.mortality_rate 
-        self.recovery_rate = c.recovery_rate 
+        self.mortality_rate = c.mortality_rate
+        self.recovery_rate = c.recovery_rate
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
     # Η συνάρτηση που αρχικοποιεί το περιβάλλον της προσομοίωσης
+
     def initialize_environment(self):
         self.window = Tk()
         self.window.title("Epidemic Simulation")
@@ -52,6 +56,7 @@ class Simulation:
             self.window.update_idletasks()
             self.window.update()
     # Η βασική μέθοδος για να τρέξει ολόκληρη η προσομοίωση.
+
     def run(self):
         if not self.running:
             self.running = True
@@ -78,7 +83,8 @@ class Simulation:
                         ag_x = random.randint(
                             0, self.canvas_size[0] - self.ui_space)
                         ag_y = random.randint(0, self.canvas_size[1])
-                new_agent = ra.ReflexAgent(self, (ag_x, ag_y), 'red', "sick")
+                new_agent = ra.ReflexAgent(
+                    self, (ag_x, ag_y), 'firebrick1', "sick")
                 new_agent.sick_days += 1
                 self.agent_list.append(new_agent)
                 self.agent_grid[ag_x][ag_y].append(new_agent)
@@ -112,36 +118,38 @@ class Simulation:
                 if not self.is_paused:
                     # Για κάθε πράκτορα
                     for agent in self.agent_list:
-                        # Αν έχει φτάσει στο κατάστημα ή στο κέντρο, έχει φτάσει στον προορισμό του
-                        if agent.state == agent.pref_shop_state or agent.state == self.center.state:
-                            agent.reached_destination = True
-                        elif agent.state == agent.home_state:
-                            agent.reached_destination = False
-                        # Αν επικρατεί lockdown, δες αν έχει έρθει η στιγμή να βγει ο πράκτορας έξω
-                        if self.lockdown:
-                            if (self.day % agent.shop_in_lockdown) == 0:
-                                agent.in_lockdown = False
+                        if agent.condition != "deceased":
+                            # Αν έχει φτάσει στο κατάστημα ή στο κέντρο, έχει φτάσει στον προορισμό του
+                            if agent.state == agent.pref_shop_state or agent.state == self.center.state:
+                                agent.reached_destination = True
+                            elif agent.state == agent.home_state:
+                                agent.reached_destination = False
+                            # Αν επικρατεί lockdown, δες αν έχει έρθει η στιγμή να βγει ο πράκτορας έξω
+                            if self.lockdown:
+                                if (self.day % agent.shop_in_lockdown) == 0:
+                                    agent.in_lockdown = False
+                                else:
+                                    agent.in_lockdown = True
+                            # Αν ο πράκτορας έχει φτάσει τον προορισμό του ή επικρατεί lockdown, να επιστρέψει στο σπίτι του
+                            if agent.reached_destination or agent.in_lockdown:
+                                agent.find_next_state(agent.home_state)
                             else:
-                                agent.in_lockdown = True
-                        # Αν ο πράκτορας έχει φτάσει τον προορισμό του ή επικρατεί lockdown, να επιστρέψει στο σπίτι του
-                        if agent.reached_destination or agent.in_lockdown:
-                            agent.find_next_state(agent.home_state)
-                        else:
-                            # Αλλιώς, μετακίνησε τον πράκτορα στο κατάστημα ή στο κέντρο
-                            if (self.day % agent.center_days) == 0:
-                                agent.find_next_state(self.center.state)
-                            else:
-                                agent.find_next_state(agent.pref_shop_state)
-                        # Δες αν ο πράκτορας πρέπει να μολυνθεί ή να μολύνει κάποιον άλλον και ενημέρωσε το UI
-                        agent.update_conditions()
-                        # Ενημέρωσε τη θέση του πράκτορα
-                        agent.update()
+                                # Αλλιώς, μετακίνησε τον πράκτορα στο κατάστημα ή στο κέντρο
+                                if (self.day % agent.center_days) == 0:
+                                    agent.find_next_state(self.center.state)
+                                else:
+                                    agent.find_next_state(
+                                        agent.pref_shop_state)
+                            # Δες αν ο πράκτορας πρέπει να μολυνθεί ή να μολύνει κάποιον άλλον και ενημέρωσε το UI
+                            agent.update_conditions()
+                            # Ενημέρωσε τη θέση του πράκτορα
+                            agent.update()
                     # Αν χρειαστεί, άλλαξε τη μέρα και έλεγξε αν πρέπει να πεθάνει κάποιος ή να αναρρώσει
                     self.counter += 1
-                    if self.counter >= (self.canvas_size[0] - self.ui_space) // 8:
+                    if self.counter >= (self.canvas_size[0] - self.ui_space) // 4:
                         self.day += 1
                         self.counter = 0
-                        for agent in self.agent_list:    
+                        for agent in self.agent_list:
                             if agent.sick_days > 0 and agent.sick_days <= self.recovery_rate:
                                 agent.sick_days += 1
                             agent.check_death()
@@ -151,10 +159,13 @@ class Simulation:
                 self.window.update_idletasks()
                 self.window.update()
                 self._ui.update_counters()
+
     def destroy(self):
         self.window.destroy()
 
 # Εικονικό κατάστημα για την προσομοίωση της κοινότητας
+
+
 class Shop:
     def __init__(self, canvas, state, width, height):
         self.canvas = canvas
@@ -169,6 +180,8 @@ class Shop:
             self.x1, self.y1, self.x2, self.y2, fill="peru")
 
 # Το κέντρο της κοινότητας απ' όπου περνάει κάθε πράκτορας κάποια στιγμή
+
+
 class Center:
     def __init__(self, canvas, canvas_size, ui_space, width, height):
         self.canvas = canvas

@@ -3,6 +3,7 @@ from tkinter import *
 import random
 # Ανακλαστικός πράκτορας τεχνητής νοημοσύνης
 
+
 class ReflexAgent:
     def __init__(self, simENV, state, color, condition):
         self.simENV = simENV
@@ -29,7 +30,7 @@ class ReflexAgent:
         self.center_days = random.randint(2, 5)
         # Kάθε πόσες μέρες ο πράκτορας θα βγαίνει από το σπίτι το σε lockdown
         self.shop_in_lockdown = random.randint(2, 7)
-        
+
     # Μέθοδος εύρεσης του καταστήματος προτίμησης βάσει τοποθεσίας.
     def preferred_shop(self, shop_list):
         min_d = float('inf')
@@ -41,7 +42,9 @@ class ReflexAgent:
                 min_d = d
                 pref_shop_state = shop.state
         return pref_shop_state
+
     # Μέθοδος εύρεσης της επόμενης κατάστασης στην οποία σκοπεύει να μετακινηθεί ο πράκτορας
+
     def find_next_state(self, goal_state):
         successor_states = hf.neighbor_states(
             self.state, 1, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
@@ -55,22 +58,28 @@ class ReflexAgent:
                 min_cost = cost
                 next_state = succesor
         self.next_state = next_state
-    # Η συνάρτηση αξιολόγησης (προς το παρόν ο πράκτορας αξιολογεί βάσει ελάχιστης απόστασης από τον στόχο).
+
+    # Η συνάρτηση αξιολόγησης.
+
     def evaluation_function(self, new_state, goal_state):
         # Αν δεν χρειάζεται να κρατήσουν αποστάσεις τότε επέστρεψε τη min_distance
         if not self.simENV.distance:
             return hf.min_distance(new_state, goal_state)
         # Αλλιώς
         else:
-            neighbors = hf.neighbor_states(new_state, 5, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
+            neighbors = hf.neighbor_states(
+                new_state, 5, (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0])))
             total_score = hf.min_distance(new_state, goal_state)
             for state in neighbors:
-                for i in self.simENV.agent_grid[state[0]] [state[1]]:
+                for i in self.simENV.agent_grid[state[0]][state[1]]:
                     if i != self:
-                        total_score += 1 / (hf.min_distance(new_state, state) + 1) * 2
-                        
+                        total_score += 1 / \
+                            (hf.min_distance(new_state, state) + 1) * 2
+
             return total_score
+
     # Η μέθοδος που ελέγχει αν ο πράκτορας έχει μολυνθεί από την ασθένεια
+
     def update_conditions(self):
         size = (len(self.simENV.agent_grid), len(self.simENV.agent_grid[0]))
         # Για κάθε κοντινή κατάστηση από την τωρινή του πράκτορα δες αν υπάρχουν άλλοι πράκτορες σε αυτές.
@@ -81,30 +90,34 @@ class ReflexAgent:
             for j in self.simENV.agent_grid[i[0]][i[1]]:
                 if random.randint(possibility_range[0], possibility_range[1]) <= self.simENV.masks_helper_var:
                     if j.condition == "sick" and self.condition == "healthy":
-                        self.canvas.itemconfig(self.circle, fill="red")
+                        self.canvas.itemconfig(self.circle, fill="firebrick1")
                         self.condition = "sick"
                         self.simENV.sick_population += 1
+                        self.simENV.healthy_population -= 1
                         self.sick_days += 1
                     elif self.condition == "sick" and j.condition == "healthy":
-                        self.canvas.itemconfig(j.circle, fill="red")
+                        self.canvas.itemconfig(j.circle, fill="firebrick1")
                         j.condition = "sick"
                         j.sick_days += 1
                         self.simENV.sick_population += 1
+                        self.simENV.healthy_population -= 1
         if self.sick_days >= self.simENV.recovery_rate and self.condition == "sick":
             self.condition = "recovered"
             self.simENV.sick_population -= 1
-            self.canvas.itemconfig(self.circle, fill="green")
-            self.simENV.recovered_population +=1
+            self.canvas.itemconfig(self.circle, fill="chartreuse3")
+            self.simENV.recovered_population += 1
             self.sick_days = 0
+
     def check_death(self):
         if (round(self.simENV.mortality_rate) >= random.randint(0, 100)) and self.condition == "sick":
-            self.canvas.itemconfig(self.circle, fill="grey")
+            self.canvas.itemconfig(self.circle, fill="gray")
             self.simENV.sick_population -= 1
-            self.simENV.population -= 1
             self.sick_days = 0
             self.condition = "deceased"
             self.simENV.deceased_population += 1
+
     # Η μέθοδος αυτή καλείται για να ανανεώσει την κατάσταση του πράκτορα.
+
     def update(self):
         dx = 0  # Μετατόπιση στον άξονα x
         dy = 0  # Μετατόπιση στον άξονα y
