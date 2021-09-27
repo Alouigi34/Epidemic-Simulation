@@ -25,17 +25,17 @@ class Simulation:
         self.is_paused = False  # Ελέγχει αν έχει "παγώσει" η προσομοίωση
         self.has_started = False    # Ελέγχει αν έχει ξεκινήσει η προσομοίωση
         self.running = False    # Όσο έχει την τιμή True η προσομοίωση τρέχει
-        self.masks_helper_var = 900
         self.masks = False
         self.distance = False
         self.lockdown = False
         # Transmission Probability
         c = vi.Virus("virus_info.txt")
         self.general_transmission = c.general_transmission
+        self.masks_helper_var = self.general_transmission * 1000
         self.mask_transmission = c.mask_transmission
         self.distance_transmission = c.distance_transmission
-        self.mortality_rate = c.mortality_rate
         self.recovery_rate = c.recovery_rate
+        self.mortality_rate = c.mortality_rate / c.recovery_rate
         self.ui_space = ui_space    # Ο χώρος στην οθόνη που δίνεται για το UI
         self.initialize_environment()
     # Η συνάρτηση που αρχικοποιεί το περιβάλλον της προσομοίωσης
@@ -146,7 +146,7 @@ class Simulation:
                             agent.update()
                     # Αν χρειαστεί, άλλαξε τη μέρα και έλεγξε αν πρέπει να πεθάνει κάποιος ή να αναρρώσει
                     self.counter += 1
-                    if self.counter >= (self.canvas_size[0] - self.ui_space) // 4:
+                    if self.counter >= (self.canvas_size[0] - self.ui_space) // 2:
                         self.day += 1
                         self.counter = 0
                         for agent in self.agent_list:

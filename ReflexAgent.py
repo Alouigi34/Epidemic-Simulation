@@ -88,7 +88,7 @@ class ReflexAgent:
         possibility_range = [0, 1000]
         for i in neighbors:
             for j in self.simENV.agent_grid[i[0]][i[1]]:
-                if random.randint(possibility_range[0], possibility_range[1]) <= self.simENV.masks_helper_var:
+                if random.randint(possibility_range[0], possibility_range[1]) < self.simENV.masks_helper_var:
                     if j.condition == "sick" and self.condition == "healthy":
                         self.canvas.itemconfig(self.circle, fill="firebrick1")
                         self.condition = "sick"
@@ -109,7 +109,7 @@ class ReflexAgent:
             self.sick_days = 0
 
     def check_death(self):
-        if (round(self.simENV.mortality_rate) >= random.randint(0, 100)) and self.condition == "sick":
+        if (round(self.simENV.mortality_rate*1000) >= random.randint(1, 100)) and self.condition == "sick":
             self.canvas.itemconfig(self.circle, fill="gray")
             self.simENV.sick_population -= 1
             self.sick_days = 0

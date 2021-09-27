@@ -1,10 +1,14 @@
 import math
 
 # Συνάρτηση εύρεσης ελάχιστης ευκλείδιας απόστασης από μία κατάσταση προορισμού σε μία κατάσταση στόχου.
+
+
 def min_distance(start_state, goal_state):
     return math.sqrt((start_state[0] - goal_state[0])**2 + (start_state[1] - goal_state[1])**2)
 
 # Συνάρτηση εύρεσης γειτονικών καταστάσεων μίας οποιασδήποτε κατάστασης.
+
+
 def neighbor_states(state, _range, grid_size):
     neighbors = []
     for i in range(-_range, _range+1):
@@ -16,6 +20,8 @@ def neighbor_states(state, _range, grid_size):
     return neighbors
 
 # Συνάρτηση που διαβάζει το αρχείο txt με τα δεδομένα του ιού
+
+
 def read_virus_file(file):
     data = {}
     with open(file, "r") as virus:
@@ -32,10 +38,15 @@ def read_virus_file(file):
         data["symptoms"] = symptoms
         data["general_transmission"] = float(
             virus[2][8: len(virus[2]) - 1]) / 100
+        print("General transmission: ", data["general_transmission"])
         data["mask_transmission"] = float(
             virus[3][10: len(virus[3]) - 1]) / 100
+        print("With mask: ", data["mask_transmission"])
         data["distance_transmission"] = float(
             virus[4][17: len(virus[4]) - 1]) / 100
+        print("With distancing: ", data["distance_transmission"])
         data["recovery_rate"] = int(virus[5][14: len(virus[5]) - 4]) + 1
-        data["mortality_rate"] = float(virus[6][15: len(virus[6]) - 1]) 
+        print("Recovery rate: ", data["recovery_rate"]-1, "days")
+        data["mortality_rate"] = float(virus[6][15: len(virus[6]) - 1]) / 100
+        print("Mortality rate: ", data["mortality_rate"])
         return data
