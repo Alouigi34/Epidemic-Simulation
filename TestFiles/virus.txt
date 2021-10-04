@@ -1,4 +1,0 @@
-Name: corona
-Probability of contagion: 12
-Symptoms: death, destruction, darkness, pain, suffery, hate
-Death rate: 12
