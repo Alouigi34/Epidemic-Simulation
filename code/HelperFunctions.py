@@ -1,7 +1,7 @@
 import math
+import os
 
 # Συνάρτηση εύρεσης ελάχιστης ευκλείδιας απόστασης από μία κατάσταση προορισμού σε μία κατάσταση στόχου.
-
 
 def min_distance(start_state, goal_state):
     return math.sqrt((start_state[0] - goal_state[0])**2 + (start_state[1] - goal_state[1])**2)
@@ -24,7 +24,9 @@ def neighbor_states(state, _range, grid_size):
 
 def read_virus_file(file):
     data = {}
-    with open(file, "r") as virus:
+    here = os.path.dirname(os.path.abspath(__file__))
+    filename = os.path.join(here, file)
+    with open(filename, "r") as virus:
         virus = virus.read().split("\n")
         for i in virus:
             if i == "":
