@@ -5,6 +5,7 @@ import ReflexAgent as ra
 import ui
 import time
 import Virus as vi
+import os
 
 # Βασικό περιβάλλον προσομοίωσης κοινότητας
 
