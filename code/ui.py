@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter.ttk import *
 from uiFunctions import *
 import time
+import os
 
 
 class Ui:
@@ -11,9 +12,13 @@ class Ui:
         self.simulation = simulation
         self.window = window
         # Εικόνες που θα χρησιμοποιήσουμε
-        self.pause_image = PhotoImage(file=r"images/pause.png")
-        self.play_image = PhotoImage(file=r"images/play.png")
-        self.stop_image = PhotoImage(file=r"images/stop.png")
+        here = os.path.dirname(os.path.abspath(__file__))
+        filename = os.path.join(here, "images/pause.png")
+        self.pause_image = PhotoImage(file=filename)
+        filename = os.path.join(here, "images/play.png")
+        self.play_image = PhotoImage(file=filename)
+        filename = os.path.join(here, "images/stop.png")
+        self.stop_image = PhotoImage(file=filename)
         self.images = [self.play_image, self.pause_image]
         self.place = 1
 
