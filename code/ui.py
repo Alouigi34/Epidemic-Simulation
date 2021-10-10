@@ -24,7 +24,7 @@ class Ui:
 
         # Μετρητής για τους υγιείς
         self.healthy_counter = Label(
-            window, bg="gray5", fg="turquoise3", text=f"Healhty: {self.simulation.healthy_population} (100%)")
+            window, bg="gray5", fg="turquoise3", text=f"Healhty: {self.simulation.healthy_population} ({round(self.simulation.healthy_population / self.simulation.population * 100, 1)}%)")
         self.healthy_counter.config(font=("Arial", 13))
         self.healthy_counter.pack()
         self.healthy_counter.place(
@@ -32,7 +32,7 @@ class Ui:
 
         # Μετρητής για τους αρρώστους
         self.sick_counter = Label(
-            window, bg="gray5", fg="firebrick1", text=f"Sick: 0 (0%)")
+            window, bg="gray5", fg="firebrick1", text=f"Sick: {self.simulation.sick_population} ({round(self.simulation.sick_population / self.simulation.population * 100, 1)}%)")
         self.sick_counter.config(font=("Arial", 13))
         self.sick_counter.pack()
         self.sick_counter.place(
