@@ -45,7 +45,9 @@ class Simulation:
         self.window.title("Epidemic Simulation")
         self.window.resizable(False, False)
         try:
-            self.window.iconbitmap('images/citylab_icon.ico')
+            here = os.path.dirname(os.path.abspath(__file__))
+            filename = os.path.join(here, 'images/citylab_icon.ico')
+            self.window.iconbitmap(filename)
         except:
             print("Could not find icon...")
         self.canvas = Canvas(
